@@ -11,7 +11,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 # copy project
 COPY . /app
 
-# Ensure artifacts directory exists
+# Ensure artifacts directory exist
 RUN mkdir -p /app/artifacts
 
 RUN python app/model.py
