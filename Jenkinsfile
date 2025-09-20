@@ -39,7 +39,6 @@ pipeline {
         }
     }
 
-    /*
     post {
         success {
             mail to: "${env.ADMIN_EMAIL}",
@@ -52,5 +51,4 @@ pipeline {
                  body: "The pipeline failed. Please check Jenkins logs."
         }
     }
-    */
 }
