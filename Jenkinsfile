@@ -58,15 +58,15 @@ pipeline {
     }
 
     post {
-        success {
-            mail to: "${ADMIN_EMAIL}",
-                 subject: "✅ Jenkins Pipeline Success - Build #${BUILD_NUMBER}",
-                 body: "The pipeline for MLOPs Assignment 1 completed successfully.\nDocker Image: ${DOCKER_IMAGE}:${BUILD_NUMBER}"
-        }
-        failure {
-            mail to: "${ADMIN_EMAIL}",
-                 subject: "❌ Jenkins Pipeline Failed - Build #${BUILD_NUMBER}",
-                 body: "The pipeline failed. Please check Jenkins for logs."
-        }
+    success {
+        mail to: "${env.ADMIN_EMAIL}",
+             subject: "✅ Jenkins Pipeline Success - Build #${BUILD_NUMBER}",
+             body: "The pipeline for MLOPs Assignment 1 completed successfully.\nDocker Image: ${DOCKER_IMAGE}:${BUILD_NUMBER}"
     }
+    failure {
+        mail to: "${env.ADMIN_EMAIL}",
+             subject: "❌ Jenkins Pipeline Failed - Build #${BUILD_NUMBER}",
+             body: "The pipeline failed. Please check Jenkins for logs."
+    }
+}
 }
