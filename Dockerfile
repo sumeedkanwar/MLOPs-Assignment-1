@@ -14,7 +14,7 @@ COPY . /app
 # Ensure artifacts directory exists
 RUN mkdir -p /app/artifacts
 
-RUN python model.py
+RUN python app/model.py
 
 EXPOSE 5000
 
