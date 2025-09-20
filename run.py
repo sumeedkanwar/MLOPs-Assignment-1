@@ -1,20 +1,23 @@
-
 import os
+import joblib
 from app.api import app
 
+# Path to the pre-trained model
 MODEL_PATH = os.environ.get("MODEL_PATH", "artifacts/car_price_model.pkl")
 
-# If you prefer to always retrain comment out the if-check below
+# Load the model
 if not os.path.exists(MODEL_PATH):
-    # If you want to train here, call your training routine. If model.py is standalone, use subprocess or import.
-    # For simplicity, we attempt to import and run model.py's train routine if present.
-    try:
-        # This expects app/model.py to expose a function train_and_save_model(...)
-        from app.model import train_and_save_model
-        print("Training model because artifact missing...")
-        train_and_save_model("data/raw/pakwheels.csv", MODEL_PATH)
-    except Exception as e:
-        print("Could not auto-train model. Please run `python app/model.py` manually. Error:", e)
+    raise FileNotFoundError(
+        f"Pre-trained model not found at '{MODEL_PATH}'. "
+        "Please make sure the model exists before starting the app."
+    )
+
+model = joblib.load(MODEL_PATH)
+print(f"Loaded pre-trained model from {MODEL_PATH}")
+
+# Make the model accessible in your Flask routes if needed
+# Example: attach it to the app object
+app.model = model
 
 # Start Flask app
 if __name__ == "__main__":
