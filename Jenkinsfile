@@ -4,7 +4,7 @@ pipeline {
     environment {
         DOCKERHUB_CREDENTIALS = credentials('docker-hub-creds')
         DOCKER_IMAGE = "sumeedkanwar/mlops-assignment-1"
-        ADMIN_EMAIL = "sumeedkanwar@gmail.com"
+        #ADMIN_EMAIL = "sumeedkanwar@gmail.com" // Commented out to avoid mail failure
     }
 
     stages {
@@ -15,14 +15,9 @@ pipeline {
         }
 
         stage('Lint & Test') {
-            agent {
-                docker {
-                    image 'python:3.10'
-                }
-            }
             steps {
-                sh 'pip install --upgrade pip'
-                sh 'pip install -r requirements.txt'
+                sh 'python3 -m pip install --upgrade pip'
+                sh 'python3 -m pip install -r requirements.txt'
                 sh 'flake8 app/ --max-line-length=120'
                 sh 'pytest tests/ --maxfail=1 --disable-warnings -q'
             }
@@ -44,6 +39,7 @@ pipeline {
         }
     }
 
+    /*
     post {
         success {
             mail to: "${env.ADMIN_EMAIL}",
@@ -56,4 +52,5 @@ pipeline {
                  body: "The pipeline failed. Please check Jenkins logs."
         }
     }
+    */
 }
