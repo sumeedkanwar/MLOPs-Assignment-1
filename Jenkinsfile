@@ -9,7 +9,7 @@ pipeline {
     environment {
         DOCKERHUB_CREDENTIALS = credentials('docker-hub-creds')
         DOCKER_IMAGE = "sumeedkanwar/mlops-assignment-1"
-        ADMIN_EMAIL = "your-admin-email@gmail.com"
+        ADMIN_EMAIL = "sumeedkanwar@gmail.com"
     }
 
     stages {
