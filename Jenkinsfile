@@ -39,16 +39,16 @@ pipeline {
         }
     }
 
-    post {
-        success {
-            mail to: "${env.ADMIN_EMAIL}",
-                 subject: "✅ Jenkins Pipeline Success - Build #${BUILD_NUMBER}",
-                 body: "The pipeline completed successfully.\nDocker Image: ${DOCKER_IMAGE}:${BUILD_NUMBER}"
-        }
-        failure {
-            mail to: "${env.ADMIN_EMAIL}",
-                 subject: "❌ Jenkins Pipeline Failed - Build #${BUILD_NUMBER}",
-                 body: "The pipeline failed. Please check Jenkins logs."
-        }
-    }
+    // post {
+    //     success {
+    //         mail to: "${env.ADMIN_EMAIL}",
+    //              subject: "✅ Jenkins Pipeline Success - Build #${BUILD_NUMBER}",
+    //              body: "The pipeline completed successfully.\nDocker Image: ${DOCKER_IMAGE}:${BUILD_NUMBER}"
+    //     }
+    //     failure {
+    //         mail to: "${env.ADMIN_EMAIL}",
+    //              subject: "❌ Jenkins Pipeline Failed - Build #${BUILD_NUMBER}",
+    //              body: "The pipeline failed. Please check Jenkins logs."
+    //     }
+    // }
 }
