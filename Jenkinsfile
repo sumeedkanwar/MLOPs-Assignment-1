@@ -14,34 +14,30 @@ pipeline {
             }
         }
 
-        stage('Install Dependencies, Lint & Test') {
+        stage('Lint & Test') {
             agent {
                 docker {
                     image 'python:3.10'
-                    args '-v /var/run/docker.sock:/var/run/docker.sock'
                 }
             }
             steps {
-                sh 'python -m venv venv'
-                sh '. venv/bin/activate && pip install --upgrade pip'
-                sh '. venv/bin/activate && pip install -r requirements.txt'
-                sh '. venv/bin/activate && flake8 app/ --max-line-length=120'
-                sh '. venv/bin/activate && pytest tests/ --maxfail=1 --disable-warnings -q'
+                sh 'pip install --upgrade pip'
+                sh 'pip install -r requirements.txt'
+                sh 'flake8 app/ --max-line-length=120'
+                sh 'pytest tests/ --maxfail=1 --disable-warnings -q'
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                script {
-                    sh "docker build -t ${DOCKER_IMAGE}:${BUILD_NUMBER} ."
-                }
+                sh "docker build -t ${DOCKER_IMAGE}:${BUILD_NUMBER} ."
             }
         }
 
         stage('Push to DockerHub') {
             steps {
-                script {
-                    sh "echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin"
+                withCredentials([usernamePassword(credentialsId: 'docker-hub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    sh "echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin"
                     sh "docker push ${DOCKER_IMAGE}:${BUILD_NUMBER}"
                 }
             }
@@ -52,12 +48,12 @@ pipeline {
         success {
             mail to: "${env.ADMIN_EMAIL}",
                  subject: "✅ Jenkins Pipeline Success - Build #${BUILD_NUMBER}",
-                 body: "The pipeline for MLOPs Assignment 1 completed successfully.\nDocker Image: ${DOCKER_IMAGE}:${BUILD_NUMBER}"
+                 body: "The pipeline completed successfully.\nDocker Image: ${DOCKER_IMAGE}:${BUILD_NUMBER}"
         }
         failure {
             mail to: "${env.ADMIN_EMAIL}",
                  subject: "❌ Jenkins Pipeline Failed - Build #${BUILD_NUMBER}",
-                 body: "The pipeline failed. Please check Jenkins for logs."
+                 body: "The pipeline failed. Please check Jenkins logs."
         }
     }
 }

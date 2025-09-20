@@ -1,4 +1,3 @@
-# Dockerfile
 FROM python:3.11-slim
 
 WORKDIR /app
@@ -15,9 +14,7 @@ COPY . /app
 # Ensure artifacts directory exists
 RUN mkdir -p /app/artifacts
 
-# Train model during image build (optional but convenient)
-# This step can be heavy; if you prefer, comment it out and pre-build the model locally.
-RUN python app/model.py
+RUN python model.py
 
 EXPOSE 5000
 
