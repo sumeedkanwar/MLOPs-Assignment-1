@@ -1,10 +1,15 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'python:3.10'
+            args '-u root:root'   // run as root to avoid permissions issues
+        }
+    }
 
     environment {
         DOCKERHUB_CREDENTIALS = credentials('docker-hub-creds')
         DOCKER_IMAGE = "sumeedkanwar/mlops-assignment-1"
-        ADMIN_EMAIL = "sumeedkanwar@gmail.com"
+        ADMIN_EMAIL = "your-admin-email@gmail.com"
     }
 
     stages {
