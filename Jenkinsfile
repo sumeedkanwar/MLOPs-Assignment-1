@@ -7,7 +7,6 @@ pipeline {
         ADMIN_EMAIL = "sumeedkanwar@gmail.com"
     }
 
-
     stages {
         stage('Checkout') {
             steps {
@@ -44,7 +43,6 @@ pipeline {
             }
         }
     }
-
 
     post {
         success {
