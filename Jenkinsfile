@@ -14,22 +14,18 @@ pipeline {
             }
         }
 
-        stage('Install Dependencies') {
+        stage('Install Dependencies, Lint & Test') {
+            agent {
+                docker {
+                    image 'python:3.10'
+                    args '-v /var/run/docker.sock:/var/run/docker.sock'
+                }
+            }
             steps {
                 sh 'python -m venv venv'
                 sh '. venv/bin/activate && pip install --upgrade pip'
                 sh '. venv/bin/activate && pip install -r requirements.txt'
-            }
-        }
-
-        stage('Lint (Flake8)') {
-            steps {
                 sh '. venv/bin/activate && flake8 app/ --max-line-length=120'
-            }
-        }
-
-        stage('Unit Tests') {
-            steps {
                 sh '. venv/bin/activate && pytest tests/ --maxfail=1 --disable-warnings -q'
             }
         }
@@ -53,15 +49,15 @@ pipeline {
     }
 
     post {
-    success {
-        mail to: "${env.ADMIN_EMAIL}",
-             subject: "✅ Jenkins Pipeline Success - Build #${BUILD_NUMBER}",
-             body: "The pipeline for MLOPs Assignment 1 completed successfully.\nDocker Image: ${DOCKER_IMAGE}:${BUILD_NUMBER}"
+        success {
+            mail to: "${env.ADMIN_EMAIL}",
+                 subject: "✅ Jenkins Pipeline Success - Build #${BUILD_NUMBER}",
+                 body: "The pipeline for MLOPs Assignment 1 completed successfully.\nDocker Image: ${DOCKER_IMAGE}:${BUILD_NUMBER}"
+        }
+        failure {
+            mail to: "${env.ADMIN_EMAIL}",
+                 subject: "❌ Jenkins Pipeline Failed - Build #${BUILD_NUMBER}",
+                 body: "The pipeline failed. Please check Jenkins for logs."
+        }
     }
-    failure {
-        mail to: "${env.ADMIN_EMAIL}",
-             subject: "❌ Jenkins Pipeline Failed - Build #${BUILD_NUMBER}",
-             body: "The pipeline failed. Please check Jenkins for logs."
-    }
-}
 }
